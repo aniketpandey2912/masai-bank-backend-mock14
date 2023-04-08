@@ -29,7 +29,7 @@ accountsRouter.post("/openAccount", async (req, res) => {
         email: payload.email,
         panNo: payload.panNo,
       });
-      res.send({ mssg: "Account opened successfully", user: userWithID });
+      res.send({ mssg: "Account opened successfully", user: userWithID[0] });
     }
   } catch (err) {
     res.send({ mssg: "Something went wrong", err: err.message });
