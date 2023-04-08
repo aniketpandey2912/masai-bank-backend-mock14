@@ -57,7 +57,10 @@ accountsRouter.patch("/depositMoney/:id", async (req, res) => {
     let user = await AccountModel.findById({ _id: ID });
     let updatedBalance = { finalBalance: user.finalBalance + deposit };
     await AccountModel.findByIdAndUpdate({ _id: ID }, updatedBalance);
-    res.send({ mssg: "Money deposited successfully" });
+    res.send({
+      mssg: "Money deposited successfully",
+      finalBalance: updatedBalance.finalBalance,
+    });
   } catch (err) {
     res.send({ mssg: "Something went wrong", err: err.message });
   }
