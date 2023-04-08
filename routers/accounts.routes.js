@@ -21,11 +21,15 @@ accountsRouter.post("/openAccount", async (req, res) => {
     });
 
     if (allUsers.length !== 0) {
-      res.send({ mssg: "Already have an account" });
+      res.send({ mssg: "Already have an account", user: allUsers[0] });
     } else {
       let user = new AccountModel(payload);
       await user.save();
-      res.send({ mssg: "Account opened successfully" });
+      let userWithID = await AccountModel.find({
+        email: payload.email,
+        panNo: payload.panNo,
+      });
+      res.send({ mssg: "Account opened successfully", user: userWithID });
     }
   } catch (err) {
     res.send({ mssg: "Something went wrong", err: err.message });
