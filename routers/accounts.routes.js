@@ -3,8 +3,11 @@ const { AccountModel } = require("../models/openAccount.model");
 const accountsRouter = express.Router();
 
 accountsRouter.get("/", async (req, res) => {
+  let { email, panNo } = req,
+    body;
   try {
-    res.send({ mssg: "All accounts" });
+    let user = await AccountModel.find({ email, panNo });
+    res.send({ mssg: "Your account", user: user });
   } catch (err) {
     res.send({ mssg: "Something went wrong", err: err.message });
   }
