@@ -1,19 +1,25 @@
 const mongoose = require("mongoose");
 
-const openAccSchema = mongoose.Schema({
-  name: String,
-  gender: String,
-  dob: String,
-  email: String,
-  mobile: String,
-  address: String,
-  initialBalance: Number,
-  adharNo: String,
-  panNo: String,
-});
+const AccountSchema = mongoose.Schema(
+  {
+    name: String,
+    gender: String,
+    dob: String,
+    email: String,
+    mobile: String,
+    address: String,
+    initialBalance: Number,
+    adharNo: String,
+    panNo: String,
+    finalBalance: Number,
+  },
+  {
+    versionKey: false,
+  }
+);
 
-const OpenAccModel = mongoose.model("user", openAccSchema);
+const AccountModel = mongoose.model("user", AccountSchema);
 
 module.exports = {
-  OpenAccModel,
+  AccountModel,
 };

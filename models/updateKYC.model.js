@@ -1,16 +1,21 @@
 const mongoose = require("mongoose");
 
-const updateKYCSchema = mongoose.Schema({
-  name: String,
-  dob: String,
-  email: String,
-  mobile: String,
-  adharNo: String,
-  panNo: String,
-});
+const KYCSchema = mongoose.Schema(
+  {
+    name: String,
+    dob: String,
+    email: String,
+    mobile: String,
+    adharNo: String,
+    panNo: String,
+  },
+  {
+    versionKey: false,
+  }
+);
 
-const UpdateKYCModel = mongoose.model("user", updateKYCSchema);
+const KYCModel = mongoose.model("user", KYCSchema);
 
 module.exports = {
-  UpdateKYCModel,
+  KYCModel,
 };

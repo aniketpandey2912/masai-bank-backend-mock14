@@ -23,3 +23,16 @@ app.listen(process.env.PORT, async () => {
 
   console.log("Server running at port", process.env.PORT);
 });
+
+
+// {
+//     "name": "Anurag",
+//    "gender": "Male",
+//    "dob": "25/12/2023",
+//    "email": "anurag@gmail.com",
+//    "mobile": 9956470720,
+//    "address": "Lucknow, India",
+//    "initialBalance": 2000,
+//    "adharNo": "11223345",
+//    "panNo": "12345"
+//  }

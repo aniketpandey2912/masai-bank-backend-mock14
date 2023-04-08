@@ -1,4 +1,5 @@
 const express = require("express");
+const { AccountModel } = require("../models/openAccount.model");
 const accountsRouter = express.Router();
 
 accountsRouter.get("/", async (req, res) => {
@@ -10,15 +11,32 @@ accountsRouter.get("/", async (req, res) => {
 });
 
 accountsRouter.post("/openAccount", async (req, res) => {
+  const payload = req.body;
+  payload.finalBalance = payload.initialBalance;
+  console.log(payload);
   try {
-    res.send({ mssg: "Account opened successfully" });
+    let allUsers = await AccountModel.find({
+      email: payload.email,
+      panNo: payload.panNo,
+    });
+
+    if (allUsers.length !== 0) {
+      res.send({ mssg: "Already have an account" });
+    } else {
+      let user = new AccountModel(payload);
+      await user.save();
+      res.send({ mssg: "Account opened successfully" });
+    }
   } catch (err) {
     res.send({ mssg: "Something went wrong", err: err.message });
   }
 });
 
 accountsRouter.patch("/updateKYC/:id", async (req, res) => {
+  let updates = req.body;
+  let ID = req.params.id;
   try {
+    await AccountModel.findByIdAndUpdate({ _id: ID }, updates);
     res.send({ mssg: "Updated KYC successfully" });
   } catch (err) {
     res.send({ mssg: "Something went wrong", err: err.message });
@@ -26,7 +44,12 @@ accountsRouter.patch("/updateKYC/:id", async (req, res) => {
 });
 
 accountsRouter.patch("/depositMoney/:id", async (req, res) => {
+  let deposit = req.body.deposit;
+  let ID = req.params.id;
   try {
+    let user = await AccountModel.findById({ _id: ID });
+    let updatedBalance = { finalBalance: user.finalBalance + deposit };
+    await AccountModel.findByIdAndUpdate({ _id: ID }, updatedBalance);
     res.send({ mssg: "Money deposited successfully" });
   } catch (err) {
     res.send({ mssg: "Something went wrong", err: err.message });
@@ -34,8 +57,17 @@ accountsRouter.patch("/depositMoney/:id", async (req, res) => {
 });
 
 accountsRouter.patch("/withdrawMoney/:id", async (req, res) => {
+  let withdrawl = req.body.withdrawl;
+  let ID = req.params.id;
   try {
-    res.send({ mssg: "Money withdrawl successfully" });
+    let user = await AccountModel.findById({ _id: ID });
+    if (user.finalBalance >= withdrawl) {
+      let updatedBalance = { finalBalance: user.finalBalance - withdrawl };
+      await AccountModel.findByIdAndUpdate({ _id: ID }, updatedBalance);
+      res.send({ mssg: "Money withdrawl successfull" });
+    } else {
+      res.send({ mssg: "Don't have sufficient balance", status: false });
+    }
   } catch (err) {
     res.send({ mssg: "Something went wrong", err: err.message });
   }
@@ -58,7 +90,9 @@ accountsRouter.patch("/printStatement/:id", async (req, res) => {
 });
 
 accountsRouter.delete("/closeAccount/:id", async (req, res) => {
+  let ID = req.params.id;
   try {
+    await AccountModel.findByIdAndDelete({ _id: ID });
     res.send({ mssg: "Account closed" });
   } catch (err) {
     res.send({ mssg: "Something went wrong", err: err.message });
