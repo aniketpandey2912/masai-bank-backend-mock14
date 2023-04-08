@@ -74,7 +74,10 @@ accountsRouter.patch("/withdrawMoney/:id", async (req, res) => {
     if (user.finalBalance >= withdrawl) {
       let updatedBalance = { finalBalance: user.finalBalance - withdrawl };
       await AccountModel.findByIdAndUpdate({ _id: ID }, updatedBalance);
-      res.send({ mssg: "Money withdrawl successfull" });
+      res.send({
+        mssg: "Money withdrawl successfull",
+        finalBalance: updatedBalance.finalBalance,
+      });
     } else {
       res.send({ mssg: "Don't have sufficient balance", status: false });
     }
